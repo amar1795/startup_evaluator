@@ -1,0 +1,70 @@
+import { StyleSheet } from 'react-native';
+
+export const submitStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#f7f3fa',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 0,
+    padding: 32,
+    shadowColor: '#5a3e7bff',
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 0,
+    justifyContent: 'flex-start',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#5a3e7bff',
+    marginBottom: 8,
+    textAlign: 'center',
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#7c5cbf',
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  input: {
+    marginBottom: 14,
+    backgroundColor: '#f3eafd',
+    borderRadius: 10,
+  },
+  descriptionInput: {
+    minHeight: 120,
+    maxHeight: 180,
+    textAlignVertical: 'top',
+    marginBottom: 14,
+    backgroundColor: '#f3eafd',
+    borderRadius: 10,
+    fontSize: 16,
+    padding: 12,
+  },
+  button: {
+    marginTop: 32,
+    borderRadius: 10,
+    backgroundColor: '#5a3e7bff',
+    paddingVertical: 10,
+    alignSelf: 'flex-end',
+    width: '100%',
+  },
+  buttonLabel: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    letterSpacing: 1,
+  },
+  toggleTheme: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+});
