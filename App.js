@@ -1,16 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+import { ActivityIndicator } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import SubmitScreen from './screens/SubmitScreen';
 import IdeasScreen from './screens/IdeasScreen';
 import LeaderboardScreen from './screens/LeaderboardScreen';
-import ThemeContext from './utils/ThemeContext';
 
 const Tab = createBottomTabNavigator();
+import ThemeContext from './utils/ThemeContext';
 
 export default function App() {
   const [isDark, setIsDark] = useState(false);
@@ -23,12 +25,27 @@ export default function App() {
     [isDark]
   );
 
+  const [fontsLoaded] = useFonts({
+    Poppins_600SemiBold,
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" style={{ flex: 1 }} />;
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeContext.Provider value={themeContextValue}>
         <PaperProvider>
           <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
-            <Tab.Navigator>
+            <Tab.Navigator
+              screenOptions={{
+                headerStyle: { backgroundColor: isDark ? '#121212' : '#ffffff' },
+                headerTintColor: isDark ? '#fff' : '#000',
+                tabBarStyle: { backgroundColor: isDark ? '#121212' : '#ffffff' },
+                tabBarActiveTintColor: '#4cafef',
+              }}
+            >
               <Tab.Screen name="Submit" component={SubmitScreen} />
               <Tab.Screen name="Ideas" component={IdeasScreen} />
               <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
@@ -40,5 +57,3 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-
-Toast.setRef = (ref) => Toast.ref = ref;

@@ -5,6 +5,8 @@ import { getIdeas, upvoteIdea } from '../utils/storage';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient';
+import { cardStyle } from '../styles/cardStyles';
 
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
