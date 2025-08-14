@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
+import Toast from 'react-native-toast-message';
 
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
@@ -12,6 +13,7 @@ export default function IdeasScreen() {
 
   const handleUpvote = async (id) => {
     await upvoteIdea(id);
+    Toast.show({ type: 'success', text1: 'Upvoted!' });
     loadIdeas();
   };
 
