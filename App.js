@@ -3,6 +3,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { View, Text } from 'react-native';
 import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -29,6 +30,28 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     Poppins_600SemiBold,
   });
+
+  const toastColor = '#5a3e7bff';
+  const toastConfig = {
+    success: ({ text1, props }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderLeftWidth: 6, borderLeftColor: toastColor, padding: 12, borderRadius: 8, marginHorizontal: 8, marginTop: 8, elevation: 2 }}>
+        <Text style={{ fontWeight: 'bold', color: toastColor, marginRight: 8 }}>✔</Text>
+        <Text style={{ color: '#222', fontSize: 16 }}>{text1}</Text>
+      </View>
+    ),
+    error: ({ text1, props }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderLeftWidth: 6, borderLeftColor: toastColor, padding: 12, borderRadius: 8, marginHorizontal: 8, marginTop: 8, elevation: 2 }}>
+        <Text style={{ fontWeight: 'bold', color: toastColor, marginRight: 8 }}>✖</Text>
+        <Text style={{ color: '#222', fontSize: 16 }}>{text1}</Text>
+      </View>
+    ),
+    info: ({ text1, props }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderLeftWidth: 6, borderLeftColor: toastColor, padding: 12, borderRadius: 8, marginHorizontal: 8, marginTop: 8, elevation: 2 }}>
+        
+        <Text style={{ color: '#222', fontSize: 16 }}>{text1}</Text>
+      </View>
+    ),
+  };
 
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" style={{ flex: 1 }} />;
@@ -62,7 +85,7 @@ export default function App() {
               <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
             </Tab.Navigator>
           </NavigationContainer>
-          <Toast />
+          <Toast config={toastConfig} />
         </PaperProvider>
       </ThemeContext.Provider>
     </GestureHandlerRootView>
