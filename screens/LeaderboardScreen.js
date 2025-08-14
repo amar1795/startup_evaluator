@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { FlatList, View, Share } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
+import { Card, Text, Button, Menu, IconButton } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -9,17 +9,20 @@ import { Swipeable } from 'react-native-gesture-handler';
 export default function LeaderboardScreen() {
   const [topIdeas, setTopIdeas] = useState([]);
   const [sortBy, setSortBy] = useState('votes');
+  const [sortOrder, setSortOrder] = useState('top'); // 'top' or 'bottom'
+  const [menuVisible, setMenuVisible] = useState(false);
   const [expandedIds, setExpandedIds] = useState([]);
 
-  const loadLeaderboard = async (criteria = sortBy) => {
+  const loadLeaderboard = async (criteria = sortBy, order = sortOrder) => {
     let ideas = await getIdeas();
-
     if (criteria === 'votes') {
       ideas.sort((a, b) => b.votes - a.votes);
     } else {
       ideas.sort((a, b) => b.rating - a.rating);
     }
-
+    if (order === 'bottom') {
+      ideas.reverse();
+    }
     setTopIdeas(ideas.slice(0, 5));
   };
 
@@ -61,14 +64,14 @@ export default function LeaderboardScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadLeaderboard();
-    }, [sortBy])
+      loadLeaderboard(sortBy, sortOrder);
+    }, [sortBy, sortOrder])
   );
 
   return (
     <>
-      {/* Sort Buttons */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
+      {/* Sort Buttons & Dropdown */}
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
         <Button
           mode={sortBy === 'votes' ? 'contained' : 'outlined'}
           onPress={() => setSortBy('votes')}
@@ -79,9 +82,40 @@ export default function LeaderboardScreen() {
         <Button
           mode={sortBy === 'rating' ? 'contained' : 'outlined'}
           onPress={() => setSortBy('rating')}
+          style={{ marginRight: 5 }}
         >
           Sort by Rating
         </Button>
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={
+            <Button
+              mode="outlined"
+              onPress={() => setMenuVisible(true)}
+              style={{ marginLeft: 5, flexDirection: 'column', borderColor: '#ccc', paddingVertical: 0, paddingHorizontal: 0, minWidth: 8, minHeight: 18, justifyContent: 'center', alignItems: 'center', borderRadius: 28 }}
+              contentStyle={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+            >
+              <IconButton
+                icon={sortOrder === 'top' ? 'arrow-up' : 'arrow-down'}
+                size={18}
+                style={{ marginTop: 8, backgroundColor: 'transparent' }}
+                disabled
+              />
+            </Button>
+          }
+        >
+          <Menu.Item
+            onPress={() => { setSortOrder('top'); setMenuVisible(false); }}
+            title="Top to Bottom"
+            leadingIcon="arrow-up"
+          />
+          <Menu.Item
+            onPress={() => { setSortOrder('bottom'); setMenuVisible(false); }}
+            title="Bottom to Top"
+            leadingIcon="arrow-down"
+          />
+        </Menu>
       </View>
 
       {/* Leaderboard List */}

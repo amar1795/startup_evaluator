@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SubmitScreen from './screens/SubmitScreen';
 import IdeasScreen from './screens/IdeasScreen';
 import LeaderboardScreen from './screens/LeaderboardScreen';
+import { Send, Lightbulb, Trophy } from 'lucide-react-native';
 
 const Tab = createBottomTabNavigator();
 import ThemeContext from './utils/ThemeContext';
@@ -39,12 +40,22 @@ export default function App() {
         <PaperProvider>
           <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
             <Tab.Navigator
-              screenOptions={{
+              screenOptions={({ route }) => ({
                 headerStyle: { backgroundColor: isDark ? '#121212' : '#ffffff' },
                 headerTintColor: isDark ? '#fff' : '#000',
                 tabBarStyle: { backgroundColor: isDark ? '#121212' : '#ffffff' },
-                tabBarActiveTintColor: '#4cafef',
-              }}
+                tabBarActiveTintColor: '#5a3e7bff',
+                tabBarIcon: ({ color, size }) => {
+                  if (route.name === 'Submit') {
+                    return <Send color={color} size={size} />;
+                  } else if (route.name === 'Ideas') {
+                    return <Lightbulb color={color} size={size} />;
+                  } else if (route.name === 'Leaderboard') {
+                    return <Trophy color={color} size={size} />;
+                  }
+                  return null;
+                },
+              })}
             >
               <Tab.Screen name="Submit" component={SubmitScreen} />
               <Tab.Screen name="Ideas" component={IdeasScreen} />

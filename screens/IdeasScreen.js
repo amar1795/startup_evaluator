@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { FlatList, View, Share } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
+import { Menu, IconButton } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,14 +12,19 @@ import { cardStyle } from '../styles/cardStyles';
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
   const [sortBy, setSortBy] = useState('votes');
+  const [sortOrder, setSortOrder] = useState('top'); // 'top' or 'bottom'
+  const [menuVisible, setMenuVisible] = useState(false);
   const [expandedIds, setExpandedIds] = useState([]);
 
-  const loadIdeas = async (criteria = sortBy) => {
+  const loadIdeas = async (criteria = sortBy, order = sortOrder) => {
     let data = await getIdeas();
     if (criteria === 'votes') {
       data.sort((a, b) => b.votes - a.votes);
     } else {
       data.sort((a, b) => b.rating - a.rating);
+    }
+    if (order === 'bottom') {
+      data.reverse();
     }
     setIdeas(data);
   };
@@ -61,14 +67,14 @@ export default function IdeasScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadIdeas();
-    }, [sortBy])
+      loadIdeas(sortBy, sortOrder);
+    }, [sortBy, sortOrder])
   );
 
   return (
     <>
-      {/* Sort Buttons */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
+      {/* Sort Buttons & Dropdown */}
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
         <Button
           mode={sortBy === 'votes' ? 'contained' : 'outlined'}
           onPress={() => setSortBy('votes')}
@@ -79,9 +85,41 @@ export default function IdeasScreen() {
         <Button
           mode={sortBy === 'rating' ? 'contained' : 'outlined'}
           onPress={() => setSortBy('rating')}
+          style={{ marginRight: 5 }}
         >
           Sort by Rating
         </Button>
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={
+            <Button
+              mode="outlined"
+              onPress={() => setMenuVisible(true)}
+              style={{ marginLeft: 5, flexDirection: 'column', borderColor: '#ccc', paddingVertical: 0, paddingHorizontal: 0, minWidth: 8, minHeight: 18, justifyContent: 'center', alignItems: 'center',borderRadius: 28 }}
+              contentStyle={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+            >
+              
+              <IconButton
+                icon={sortOrder === 'top' ? 'arrow-up' : 'arrow-down'}
+                size={18}
+                style={{ marginTop: 8, backgroundColor: 'transparent' }}
+                disabled
+              />
+            </Button>
+          }
+        >
+          <Menu.Item
+            onPress={() => { setSortOrder('top'); setMenuVisible(false); }}
+            title="Top to Bottom"
+            leadingIcon="arrow-up"
+          />
+          <Menu.Item
+            onPress={() => { setSortOrder('bottom'); setMenuVisible(false); }}
+            title="Bottom to Top"
+            leadingIcon="arrow-down"
+          />
+        </Menu>
       </View>
 
       {/* Ideas List */}
