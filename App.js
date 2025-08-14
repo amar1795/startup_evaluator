@@ -8,10 +8,12 @@ import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+
 import SubmitScreen from './screens/SubmitScreen';
 import IdeasScreen from './screens/IdeasScreen';
 import LeaderboardScreen from './screens/LeaderboardScreen';
 import { Send, Lightbulb, Trophy } from 'lucide-react-native';
+import ThemeSwitch from './components/ThemeSwitch';
 
 const Tab = createBottomTabNavigator();
 import ThemeContext from './utils/ThemeContext';
@@ -68,6 +70,12 @@ export default function App() {
                 headerTintColor: isDark ? '#fff' : '#000',
                 tabBarStyle: { backgroundColor: isDark ? '#121212' : '#ffffff' },
                 tabBarActiveTintColor: '#5a3e7bff',
+                headerTitleAlign: 'left',
+                headerRight: () => (
+                  <View style={{ marginRight: 16 }}>
+                    <ThemeSwitch />
+                  </View>
+                ),
                 tabBarIcon: ({ color, size }) => {
                   if (route.name === 'Submit') {
                     return <Send color={color} size={size} />;
