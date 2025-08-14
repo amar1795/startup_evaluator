@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { FlatList, View, Share } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
-import { getIdeas } from '../utils/storage';
+import { getIdeas, upvoteIdea } from '../utils/storage';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function LeaderboardScreen() {
   const [topIdeas, setTopIdeas] = useState([]);
@@ -20,6 +21,17 @@ export default function LeaderboardScreen() {
     }
 
     setTopIdeas(ideas.slice(0, 5));
+  };
+
+  const handleUpvote = async (id) => {
+    const result = await upvoteIdea(id);
+    Toast.show({
+      type: result.success ? 'success' : 'info',
+      text1: result.message
+    });
+    if (result.success) {
+      loadLeaderboard();
+    }
   };
 
   const toggleExpand = (id) => {
@@ -39,6 +51,13 @@ export default function LeaderboardScreen() {
       Toast.show({ type: 'error', text1: 'Share failed!' });
     }
   };
+
+  // Swipe right action UI
+  const renderRightActions = () => (
+    <View style={{ backgroundColor: '#4caf50', justifyContent: 'center', width: 100, alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontWeight: 'bold' }}>👍 Upvote</Text>
+    </View>
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -77,24 +96,29 @@ export default function LeaderboardScreen() {
               : item.description;
 
           return (
-            <Card style={{ margin: 10 }}>
-              <Card.Title
-                title={`${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : ''} ${item.name}`}
-                subtitle={`Votes: ${item.votes} | Rating: ${item.rating}`}
-              />
-              <Card.Content>
-                <Text>{shortDescription}</Text>
-                {item.description.length > 100 && (
-                  <Button onPress={() => toggleExpand(item.id)}>
-                    {isExpanded ? 'Show Less' : 'Read More'}
-                  </Button>
-                )}
-                <Text>{item.tagline}</Text>
-              </Card.Content>
-              <Card.Actions>
-                <Button onPress={() => handleShare(item)}>Share</Button>
-              </Card.Actions>
-            </Card>
+            <Swipeable
+              renderRightActions={() => renderRightActions()}
+              onSwipeableRightOpen={() => handleUpvote(item.id)}
+            >
+              <Card style={{ margin: 10 }}>
+                <Card.Title
+                  title={`${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : ''} ${item.name}`}
+                  subtitle={`Votes: ${item.votes} | Rating: ${item.rating}`}
+                />
+                <Card.Content>
+                  <Text>{shortDescription}</Text>
+                  {item.description.length > 100 && (
+                    <Button onPress={() => toggleExpand(item.id)}>
+                      {isExpanded ? 'Show Less' : 'Read More'}
+                    </Button>
+                  )}
+                  <Text>{item.tagline}</Text>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={() => handleShare(item)}>Share</Button>
+                </Card.Actions>
+              </Card>
+            </Swipeable>
           );
         }}
       />

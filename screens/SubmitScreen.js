@@ -4,7 +4,7 @@ import { TextInput, Button } from 'react-native-paper';
 import { saveIdea } from '../utils/storage';
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message';
-import { ThemeContext } from '../App';
+import ThemeContext from '../utils/ThemeContext';
 
 export default function SubmitScreen({ navigation }) {
   const { toggleTheme } = useContext(ThemeContext);

@@ -4,6 +4,7 @@ import { Card, Button, Text } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
 import Toast from 'react-native-toast-message';
 import { useFocusEffect } from '@react-navigation/native';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
@@ -49,6 +50,13 @@ export default function IdeasScreen() {
     }
   };
 
+  // Swipe right action UI
+  const renderRightActions = (id) => (
+    <View style={{ backgroundColor: '#4caf50', justifyContent: 'center', width: 100, alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontWeight: 'bold' }}>👍 Upvote</Text>
+    </View>
+  );
+
   useFocusEffect(
     useCallback(() => {
       loadIdeas();
@@ -86,25 +94,30 @@ export default function IdeasScreen() {
               : item.description;
 
           return (
-            <Card style={{ margin: 10 }}>
-              <Card.Title
-                title={item.name}
-                subtitle={`${item.tagline} | Rating: ${item.rating}`}
-              />
-              <Card.Content>
-                <Text>{shortDescription}</Text>
-                {item.description.length > 100 && (
-                  <Button onPress={() => toggleExpand(item.id)}>
-                    {isExpanded ? 'Show Less' : 'Read More'}
-                  </Button>
-                )}
-                <Text>Votes: {item.votes}</Text>
-              </Card.Content>
-              <Card.Actions>
-                <Button onPress={() => handleUpvote(item.id)}>Upvote</Button>
-                <Button onPress={() => handleShare(item)}>Share</Button>
-              </Card.Actions>
-            </Card>
+            <Swipeable
+              renderRightActions={() => renderRightActions(item.id)}
+              onSwipeableRightOpen={() => handleUpvote(item.id)}
+            >
+              <Card style={{ margin: 10 }}>
+                <Card.Title
+                  title={item.name}
+                  subtitle={`${item.tagline} | Rating: ${item.rating}`}
+                />
+                <Card.Content>
+                  <Text>{shortDescription}</Text>
+                  {item.description.length > 100 && (
+                    <Button onPress={() => toggleExpand(item.id)}>
+                      {isExpanded ? 'Show Less' : 'Read More'}
+                    </Button>
+                  )}
+                  <Text>Votes: {item.votes}</Text>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={() => handleUpvote(item.id)}>Upvote</Button>
+                  <Button onPress={() => handleShare(item)}>Share</Button>
+                </Card.Actions>
+              </Card>
+            </Swipeable>
           );
         }}
       />
