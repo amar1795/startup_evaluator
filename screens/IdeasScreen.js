@@ -8,6 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
   const [sortBy, setSortBy] = useState('votes');
+  const [expandedIds, setExpandedIds] = useState([]); // Track expanded descriptions
 
   const loadIdeas = async (criteria = sortBy) => {
     let data = await getIdeas();
@@ -30,6 +31,14 @@ export default function IdeasScreen() {
     }
   };
 
+  const toggleExpand = (id) => {
+    if (expandedIds.includes(id)) {
+      setExpandedIds(expandedIds.filter((item) => item !== id));
+    } else {
+      setExpandedIds([...expandedIds, id]);
+    }
+  };
+
   // Auto-refresh when screen is focused
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +48,7 @@ export default function IdeasScreen() {
 
   return (
     <>
+      {/* Sort Buttons */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
         <Button
           mode={sortBy === 'votes' ? 'contained' : 'outlined'}
@@ -55,21 +65,38 @@ export default function IdeasScreen() {
         </Button>
       </View>
 
+      {/* Ideas List */}
       <FlatList
         data={ideas}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Card style={{ margin: 10 }}>
-            <Card.Title title={item.name} subtitle={`${item.tagline} | Rating: ${item.rating}`} />
-            <Card.Content>
-              <Text>{item.description}</Text>
-              <Text>Votes: {item.votes}</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => handleUpvote(item.id)}>Upvote</Button>
-            </Card.Actions>
-          </Card>
-        )}
+        renderItem={({ item }) => {
+          const isExpanded = expandedIds.includes(item.id);
+          const shortDescription =
+            item.description.length > 100 && !isExpanded
+              ? item.description.substring(0, 100) + '...'
+              : item.description;
+
+          return (
+            <Card style={{ margin: 10 }}>
+              <Card.Title
+                title={item.name}
+                subtitle={`${item.tagline} | Rating: ${item.rating}`}
+              />
+              <Card.Content>
+                <Text>{shortDescription}</Text>
+                {item.description.length > 100 && (
+                  <Button onPress={() => toggleExpand(item.id)}>
+                    {isExpanded ? 'Show Less' : 'Read More'}
+                  </Button>
+                )}
+                <Text>Votes: {item.votes}</Text>
+              </Card.Content>
+              <Card.Actions>
+                <Button onPress={() => handleUpvote(item.id)}>Upvote</Button>
+              </Card.Actions>
+            </Card>
+          );
+        }}
       />
     </>
   );
