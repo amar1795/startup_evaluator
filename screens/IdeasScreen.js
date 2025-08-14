@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Share } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
 import Toast from 'react-native-toast-message';
@@ -8,7 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
   const [sortBy, setSortBy] = useState('votes');
-  const [expandedIds, setExpandedIds] = useState([]); // Track expanded descriptions
+  const [expandedIds, setExpandedIds] = useState([]);
 
   const loadIdeas = async (criteria = sortBy) => {
     let data = await getIdeas();
@@ -39,7 +39,16 @@ export default function IdeasScreen() {
     }
   };
 
-  // Auto-refresh when screen is focused
+  const handleShare = async (idea) => {
+    try {
+      await Share.share({
+        message: `🚀 ${idea.name}\n${idea.tagline}\nRating: ${idea.rating}/100\nVotes: ${idea.votes}\n\n"${idea.description}"`
+      });
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Share failed!' });
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadIdeas();
@@ -93,6 +102,7 @@ export default function IdeasScreen() {
               </Card.Content>
               <Card.Actions>
                 <Button onPress={() => handleUpvote(item.id)}>Upvote</Button>
+                <Button onPress={() => handleShare(item)}>Share</Button>
               </Card.Actions>
             </Card>
           );
