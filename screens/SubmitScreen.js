@@ -70,9 +70,10 @@ export default function SubmitScreen({ navigation }) {
           value={description}
           onChangeText={setDescription}
           multiline
-          style={[submitStyles.descriptionInput, isDark && { backgroundColor: '#2d2350', color: '#fff' }]}
+          dense={true}
+          style={[submitStyles.descriptionInput, { textAlignVertical: 'top' }]}
           mode="outlined"
-          theme={{ colors: { primary: '#5a3e7bff', background: isDark ? '#2d2350' : '#f3eafd', text: isDark ? '#fff' : '#000' } }}
+          theme={{ colors: { primary: '#5a3e7bff', background: isDark ? '#2d2350' : '#f3eafd', text: isDark ? '#fff' : '#000', placeholder: isDark ? '#c9b6e4' : undefined } }}
         />
         <Button
           mode="contained"
