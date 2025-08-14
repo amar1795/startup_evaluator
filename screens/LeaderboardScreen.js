@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import { getIdeas } from '../utils/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function LeaderboardScreen() {
   const [topIdeas, setTopIdeas] = useState([]);
@@ -19,13 +20,15 @@ export default function LeaderboardScreen() {
     setTopIdeas(ideas.slice(0, 5));
   };
 
-  useEffect(() => {
-    loadLeaderboard();
-  }, [sortBy]);
+  // Auto-refresh when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadLeaderboard();
+    }, [sortBy])
+  );
 
   return (
     <>
-      {/* Sort Buttons */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
         <Button
           mode={sortBy === 'votes' ? 'contained' : 'outlined'}
@@ -42,7 +45,6 @@ export default function LeaderboardScreen() {
         </Button>
       </View>
 
-      {/* Leaderboard List */}
       <FlatList
         data={topIdeas}
         keyExtractor={(item) => item.id}

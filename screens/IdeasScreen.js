@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
 import Toast from 'react-native-toast-message';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function IdeasScreen() {
   const [ideas, setIdeas] = useState([]);
-  const [sortBy, setSortBy] = useState('votes'); // default sort
+  const [sortBy, setSortBy] = useState('votes');
 
   const loadIdeas = async (criteria = sortBy) => {
     let data = await getIdeas();
@@ -29,13 +30,15 @@ export default function IdeasScreen() {
     }
   };
 
-  useEffect(() => {
-    loadIdeas();
-  }, [sortBy]);
+  // Auto-refresh when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadIdeas();
+    }, [sortBy])
+  );
 
   return (
     <>
-      {/* Sort Buttons */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
         <Button
           mode={sortBy === 'votes' ? 'contained' : 'outlined'}
@@ -52,7 +55,6 @@ export default function IdeasScreen() {
         </Button>
       </View>
 
-      {/* Ideas List */}
       <FlatList
         data={ideas}
         keyExtractor={(item) => item.id}
