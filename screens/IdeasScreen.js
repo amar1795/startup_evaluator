@@ -12,9 +12,14 @@ export default function IdeasScreen() {
   };
 
   const handleUpvote = async (id) => {
-    await upvoteIdea(id);
-    Toast.show({ type: 'success', text1: 'Upvoted!' });
-    loadIdeas();
+    const result = await upvoteIdea(id);
+    Toast.show({
+      type: result.success ? 'success' : 'info',
+      text1: result.message
+    });
+    if (result.success) {
+      loadIdeas();
+    }
   };
 
   useEffect(() => {
