@@ -54,3 +54,14 @@ The **Startup Idea Evaluator** is a playful app that allows users to:
    ```bash
    git clone https://github.com/YOUR_USERNAME/startup-idea-evaluator.git
    cd startup-idea-evaluator
+   
+2. **Install dependencies**:
+   ```bash
+   npm install
+3. **Run the app with Expo:**:
+   ```bash
+  npx expo start
+4.Open on your device:
+ -Install the Expo Go app from Play Store or App Store.
+ -Scan the QR code shown in your terminal/Expo DevTools.
+   
