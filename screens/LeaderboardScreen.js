@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { FlatList, View, Share } from 'react-native';
 import { Card, Text, Button, Menu, IconButton } from 'react-native-paper';
 import { getIdeas, upvoteIdea } from '../utils/storage';
@@ -45,20 +45,28 @@ export default function LeaderboardScreen() {
     }
   };
 
-  const handleShare = async (idea) => {
+  // Store refs for each Swipeable
+  const swipeableRefs = useRef({});
+
+  const handleShare = async (idea, id) => {
     try {
       await Share.share({
         message: `🚀 ${idea.name}\n${idea.tagline}\nRating: ${idea.rating}/100\nVotes: ${idea.votes}\n\n"${idea.description}"`
       });
     } catch (error) {
       Toast.show({ type: 'error', text1: 'Share failed!' });
+    } finally {
+      // Close the swipeable after share popup closes
+      if (swipeableRefs.current[id]) {
+        swipeableRefs.current[id].close();
+      }
     }
   };
 
-  // Swipe right action UI
-  const renderRightActions = () => (
-    <View style={{ backgroundColor: '#4caf50', justifyContent: 'center', width: 100, alignItems: 'center' }}>
-      <Text style={{ color: 'white', fontWeight: 'bold' }}>👍 Upvote</Text>
+  // Swipe right action UI (for share)
+  const renderLeftActions = () => (
+    <View style={{ backgroundColor: '#2196f3', justifyContent: 'center', width: 100, alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>📤 Share</Text>
     </View>
   );
 
@@ -131,8 +139,11 @@ export default function LeaderboardScreen() {
 
           return (
             <Swipeable
-              renderRightActions={() => renderRightActions()}
-              onSwipeableRightOpen={() => handleUpvote(item.id)}
+              ref={ref => { swipeableRefs.current[item.id] = ref; }}
+              renderLeftActions={() => renderLeftActions()}
+              onSwipeableLeftOpen={() => handleShare(item, item.id)}
+              renderRightActions={null}
+              rightThreshold={10000}
             >
               <Card style={{ margin: 10 }}>
                 <Card.Title
@@ -149,7 +160,7 @@ export default function LeaderboardScreen() {
                   <Text>{item.tagline}</Text>
                 </Card.Content>
                 <Card.Actions>
-                  <Button onPress={() => handleShare(item)}>Share</Button>
+                  <Button onPress={() => handleShare(item, item.id)}>Share</Button>
                 </Card.Actions>
               </Card>
             </Swipeable>

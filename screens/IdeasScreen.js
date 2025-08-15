@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { FlatList, View, Share } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
 import { Menu, IconButton } from 'react-native-paper';
@@ -29,6 +29,9 @@ export default function IdeasScreen() {
     setIdeas(data);
   };
 
+  // Store refs for each Swipeable
+  const swipeableRefs = useRef({});
+
   const handleUpvote = async (id) => {
     const result = await upvoteIdea(id);
     Toast.show({
@@ -37,6 +40,10 @@ export default function IdeasScreen() {
     });
     if (result.success) {
       loadIdeas();
+    }
+    // Close the swipeable after toast notification
+    if (swipeableRefs.current[id]) {
+      swipeableRefs.current[id].close();
     }
   };
 
@@ -58,8 +65,8 @@ export default function IdeasScreen() {
     }
   };
 
-  // Swipe right action UI
-  const renderRightActions = (id) => (
+  // Swipe left action UI (for upvote to the right)
+  const renderLeftActions = (id) => (
     <View style={{ backgroundColor: '#4caf50', justifyContent: 'center', width: 100, alignItems: 'center' }}>
       <Text style={{ color: 'white', fontWeight: 'bold' }}>👍 Upvote</Text>
     </View>
@@ -135,8 +142,9 @@ export default function IdeasScreen() {
 
           return (
             <Swipeable
-              renderRightActions={() => renderRightActions(item.id)}
-              onSwipeableRightOpen={() => handleUpvote(item.id)}
+              ref={ref => { swipeableRefs.current[item.id] = ref; }}
+              renderLeftActions={() => renderLeftActions(item.id)}
+              onSwipeableLeftOpen={() => handleUpvote(item.id)}
             >
               <Card style={{ margin: 10 }}>
                 <Card.Title
