@@ -65,3 +65,28 @@ The **Startup Idea Evaluator** is a playful app that allows users to:
  -Install the Expo Go app from Play Store or App Store.
  -Scan the QR code shown in your terminal/Expo DevTools.
    
+## 📱 How to View / Test This App
+
+You can test this app directly on your mobile device using **Expo Go**.
+
+### **Steps to Test**
+1. **Install Expo Go**:
+   - [📥 Download for Android (Play Store)](https://play.google.com/store/apps/details?id=host.exp.exponent)
+   - [📥 Download for iOS (App Store)](https://apps.apple.com/app/expo-go/id982107779)
+
+2. **Open Expo Go** on your phone.
+
+3. Tap on **"Scan QR Code"** inside Expo Go.
+
+4. Scan the QR code below:
+
+  ![Screenshot 2025-08-15 135543](https://github.com/user-attachments/assets/7ac1a682-709b-4d6e-9740-ae3b61eaf284)
+
+
+5. The app will load instantly on your phone.
+
+---
+
+### 💡 Note:
+- Make sure you have an active internet connection.
+- For the best experience, allow Expo Go to load all assets completely before interacting.
