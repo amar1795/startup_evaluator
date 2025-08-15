@@ -3,7 +3,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
-import { View, Text } from 'react-native';
+import { View, Text, StatusBar } from 'react-native';
 import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -61,6 +61,12 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* StatusBar for both modes, matching app background */}
+      <StatusBar
+        backgroundColor={isDark ? '#121212' : '#fff'}
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        translucent={false}
+      />
       <ThemeContext.Provider value={themeContextValue}>
         <PaperProvider>
           <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
