@@ -44,7 +44,7 @@ The **Startup Idea Evaluator** is a playful app that allows users to:
 - ✅ **Read More / Show Less** for long descriptions  
 - ✅ Share idea via native share sheet  
 - ✅ Swipe right to **upvote** (gesture)  
-- ✅ Gradient background + shadows for cards  
+- ✅ shadows for cards  
 - ✅ Custom font for titles
 
 ---
