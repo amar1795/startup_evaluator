@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { useContext } from 'react';
+import ThemeContext from '../utils/ThemeContext';
 import { FlatList, View, Share } from 'react-native';
 import { Card, Button, Text } from 'react-native-paper';
 import { Menu, IconButton } from 'react-native-paper';
@@ -10,6 +12,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { cardStyle } from '../styles/cardStyles';
 
 export default function IdeasScreen() {
+    const { isDark } = useContext(ThemeContext);
+
   const [ideas, setIdeas] = useState([]);
   const [sortBy, setSortBy] = useState('votes');
   const [sortOrder, setSortOrder] = useState('top'); // 'top' or 'bottom'
@@ -101,16 +105,36 @@ export default function IdeasScreen() {
           onDismiss={() => setMenuVisible(false)}
           anchor={
             <Button
-              mode="outlined"
+               mode="outlined"
               onPress={() => setMenuVisible(true)}
-              style={{ marginLeft: 5, flexDirection: 'column', borderColor: '#ccc', paddingVertical: 0, paddingHorizontal: 0, minWidth: 8, minHeight: 18, justifyContent: 'center', alignItems: 'center',borderRadius: 28 }}
+              style={{
+                marginLeft: 5,
+                flexDirection: 'column',
+                borderColor: isDark ? '#5a3e7b' : '#ccc',
+                backgroundColor: isDark ? '#fff' : '#fff',
+                paddingVertical: 0,
+                paddingHorizontal: 0,
+                minWidth: 8,
+                minHeight: 14,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 28
+              }}
               contentStyle={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
             >
               
               <IconButton
-                icon={sortOrder === 'top' ? 'arrow-up' : 'arrow-down'}
+                icon={
+                  sortOrder === 'top'
+                    ? 'sort-ascending'
+                    : sortOrder === 'bottom'
+                    ? 'sort-descending'
+                    : 'sort'
+                }
                 size={18}
-                style={{ marginTop: 8, backgroundColor: 'transparent' }}
+                style={{ marginTop: 8 }}
+                iconColor="#70aa24ff" // Example green
+
                 disabled
               />
             </Button>
@@ -119,12 +143,12 @@ export default function IdeasScreen() {
           <Menu.Item
             onPress={() => { setSortOrder('top'); setMenuVisible(false); }}
             title="Top to Bottom"
-            leadingIcon="arrow-up"
+            leadingIcon="sort-ascending"
           />
           <Menu.Item
             onPress={() => { setSortOrder('bottom'); setMenuVisible(false); }}
             title="Bottom to Top"
-            leadingIcon="arrow-down"
+            leadingIcon="sort-descending"
           />
         </Menu>
       </View>
